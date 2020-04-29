@@ -9,7 +9,7 @@ import (
 	"web-02/model"
 )
 
-func init_data() ([]model.User) {
+func initData() []model.User {
 	user := make([]model.User, 2)
 	user[0] = model.User{1, "张珊", "2019-01-02", true}
 	user[1] = model.User{2, "张珊2", "2019-11-02", false}
@@ -17,42 +17,30 @@ func init_data() ([]model.User) {
 }
 
 func ListUser(c *gin.Context) {
-	users := init_data()
-	c.JSON(200,gin.H{"data": users})
+	users, err := model.User{}.UserList()
+	c.JSON(200, gin.H{"data": users, "errMsg": err})
 }
 
-
 func Get(c *gin.Context) {
-	id, _ := strconv.Atoi( c.Param("id"))
+	id, _ := strconv.Atoi(c.Param("id"))
 
-	users := init_data()
-	user := model.User{}
-	for k, v := range users {
-		if id == v.Id {
-			fmt.Println("遍历:",k)
-			user = v
-			continue
-		}
-	}
-	c.JSON(200,gin.H{"data":user})
+	user, err := model.User{}.GetUser(id)
+
+	c.JSON(200, gin.H{"data": user, "errMsg": err})
 }
 
 func Update(c *gin.Context) {
 	data, _ := ioutil.ReadAll(c.Request.Body)
-	//fmt.Printf("ctx.Request.body: %v", string(data))
-
 	params := fmt.Sprintf("%v", string(data))
 	fmt.Println(params)
+	var getBody model.User
+	if err := json.Unmarshal(data, &getBody); err != nil {
+		fmt.Println(" transcode get, body Unmarshal error:%v", err)
+		return
+	}
 	fmt.Println("========================")
-	keyBytes, _ := json.Marshal(data)
-	fmt.Println(string(keyBytes))
-	fmt.Println("========================")
-	user := model.User{}
-	par := []byte(params)
-	json.Unmarshal(par,&user)
-	fmt.Println("========================")
-	fmt.Println("%+v\n",user)
-	fmt.Println("%#v\n",user)
+	fmt.Println(getBody)
+	res, err := model.User{}.UpdateUser(getBody)
 	//fmt.Println(keyBytes)
-	c.JSON(200,gin.H{"data":user})
+	c.JSON(200, gin.H{"data": res, "errMsg": err})
 }
