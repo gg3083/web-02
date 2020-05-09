@@ -2,14 +2,26 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 	. "web-02/controller"
+	_ "web-02/docs"
 )
 
-func InitRoute()  *gin.Engine{
+func InitRoute() *gin.Engine {
 	rotuer := gin.Default()
-	rotuer.GET("/",Index)
-	rotuer.GET("/list",ListUser)
-	rotuer.GET("/get/:id",Get)
-	rotuer.POST("/update",Update)
+	rotuer.Use(Cors())
+	rotuer.GET("/", Index)
+	rotuer.GET("/list", ListUser)
+	rotuer.GET("/get/:id", Get)
+	rotuer.POST("/update", Update)
+	rotuer.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return rotuer
+}
+
+func Cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Next()
+	}
 }

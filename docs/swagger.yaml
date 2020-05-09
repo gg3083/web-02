@@ -1,0 +1,108 @@
+definitions:
+  model.User:
+    properties:
+      birthday:
+        type: string
+      id:
+        type: integer
+      sex:
+        type: boolean
+      userName:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: An example of gin
+  license:
+    name: MIT
+    url: https://Pay/blob/master/LICENSE
+  termsOfService: https://github.com/EDDYCJY/go-gin-example
+  title: Golang Gin API
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: 接口详细描述信息
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.User'
+      summary: 接口概要说明
+      tags:
+      - 首页
+  /get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 根据Id获取所有用户信息
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.User'
+      summary: 获取单个用户信息
+      tags:
+      - 用户信息
+  /list:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有用户信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.User'
+      summary: 获取用户信息
+      tags:
+      - 用户信息
+  /update:
+    post:
+      consumes:
+      - application/json
+      description: 根据Id获取所有用户信息
+      parameters:
+      - description: id代理 userName承兑人账户名 birthday承兑人姓名 sex电话号码
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.User'
+      summary: 获取单个用户信息
+      tags:
+      - 用户信息
+swagger: "2.0"

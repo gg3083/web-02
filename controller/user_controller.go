@@ -16,11 +16,28 @@ func initData() []model.User {
 	return user
 }
 
+// @Summary 获取用户信息
+// @Description 获取所有用户信息
+// @Tags 用户信息
+// @accept json
+// @Produce  json
+// @Success 200 {object} model.User
+// @Failure 400 {object} model.User
+// @Router /list [get]
 func ListUser(c *gin.Context) {
 	users, err := model.User{}.UserList()
 	c.JSON(200, gin.H{"data": users, "errMsg": err})
 }
 
+// @Summary 获取单个用户信息
+// @Description 根据Id获取所有用户信息
+// @Tags 用户信息
+// @accept json
+// @Produce  json
+// @param id path int true "ID"
+// @Success 200 {object} model.User
+// @Failure 500 {object} model.User
+// @Router /get/{id} [get]
 func Get(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
@@ -29,6 +46,15 @@ func Get(c *gin.Context) {
 	c.JSON(200, gin.H{"data": user, "errMsg": err})
 }
 
+// @Summary 获取单个用户信息
+// @Description 根据Id获取所有用户信息
+// @Tags 用户信息
+// @accept json
+// @Produce  json
+// @param request body model.User true "id代理 userName承兑人账户名 birthday承兑人姓名 sex电话号码"
+// @Success 200 {object} model.User
+// @Failure 500 {object} model.User
+// @Router /update [post]
 func Update(c *gin.Context) {
 	data, _ := ioutil.ReadAll(c.Request.Body)
 	params := fmt.Sprintf("%v", string(data))
