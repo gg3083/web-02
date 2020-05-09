@@ -6,13 +6,16 @@ import (
 )
 
 type User struct {
-	Id       int    `json:"id"			sql:"id"`
-	UserName string `json:"userName"    sql:"user_name"'`
-	Birthday string `json:"birthday"    sql:"birthday"`
-	Sex      bool   `json:"sex"         sql:"sex"`
+	Id       int    `json:"id"			gorm:"primary_key" gorm:"column:id"`
+	UserName string `json:"userName"    gorm:"column:user_name"'`
+	Birthday string `json:"birthday"    gorm:"column:birthday"`
+	Sex      bool   `json:"sex"         gorm:"column:sex"`
+	Session *Session `json:"-" gorm:"-"`
+
 }
 
 func (u User) UserList() (users []User, err error) {
+	db.SqlDB.Find()
 	rows, err := db.SqlDB.Query("select id,user_name,birthday,sex from test")
 	if err != nil {
 		fmt.Println(err)
