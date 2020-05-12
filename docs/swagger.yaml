@@ -1,4 +1,15 @@
 definitions:
+  model.Response:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      errMsg:
+        type: string
+      msg:
+        type: string
+    type: object
   model.User:
     properties:
       birthday:
@@ -35,6 +46,32 @@ paths:
       summary: 接口概要说明
       tags:
       - 首页
+  /add:
+    post:
+      consumes:
+      - application/json
+      description: 添加所有用户信息
+      parameters:
+      - description: id代理 userName承兑人账户名 birthday承兑人姓名 sex电话号码
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: 添加用户信息
+      tags:
+      - 用户信息
   /get/{id}:
     get:
       consumes:
@@ -52,11 +89,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: '#/definitions/model.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: '#/definitions/model.Response'
       summary: 获取单个用户信息
       tags:
       - 用户信息
@@ -71,11 +108,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.User'
-        "400":
-          description: Bad Request
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: '#/definitions/model.Response'
       summary: 获取用户信息
       tags:
       - 用户信息
@@ -83,7 +120,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 根据Id获取所有用户信息
+      description: 修改用户信息
       parameters:
       - description: id代理 userName承兑人账户名 birthday承兑人姓名 sex电话号码
         in: body
@@ -97,12 +134,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: '#/definitions/model.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/model.User'
-      summary: 获取单个用户信息
+            $ref: '#/definitions/model.Response'
+      summary: 修改用户信息
       tags:
       - 用户信息
 swagger: "2.0"

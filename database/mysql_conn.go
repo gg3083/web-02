@@ -1,26 +1,23 @@
 package database
 
 import (
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	//"log"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"log"
 )
 
 var SqlDB *gorm.DB
 
 func init() {
-	//var err error
-	//SqlDB, err = sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/python?parseTime=true")
-	//if err != nil {
-	//	log.Fatal(err.Error())
-	//}
-	//err = SqlDB.Ping()
-	//if err != nil {
-	//	log.Fatal(err.Error())
-	//}
-	SqlDB, err := gorm.Open("mysql", "root:root@tcp(127.0.0.1:3306)/python?parseTime=true")
+	var err error
+	SqlDB, err = gorm.Open("mysql", "root:root@tcp(127.0.0.1:3306)/python?charset=utf8&parseTime=True&loc=Local")
+
 	if err != nil {
-		panic("连接数据库失败")
+		log.Fatal(err.Error())
 	}
+
+}
+
+func closeDB() {
 	defer SqlDB.Close()
 }

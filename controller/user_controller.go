@@ -1,12 +1,10 @@
 package controller
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"strconv"
 	"web-02/model"
+	"web-02/model/e"
 )
 
 func initData() []model.User {
@@ -21,12 +19,23 @@ func initData() []model.User {
 // @Tags 用户信息
 // @accept json
 // @Produce  json
-// @Success 200 {object} model.User
-// @Failure 400 {object} model.User
+// @Success 200 {object} model.Response
+// @Failure 500 {object} model.Response
 // @Router /list [get]
 func ListUser(c *gin.Context) {
+	var (
+		appG = model.Gin{C: c}
+		//form   getChannelInfoListForm
+		errMsg string
+	)
 	users, err := model.User{}.UserList()
-	c.JSON(200, gin.H{"data": users, "errMsg": err})
+	if err != nil {
+		errMsg = err.Error()
+		appG.Response(e.ERROR, e.INVALID_PARAMS, errMsg, users)
+		return
+	}
+	appG.Response(e.SUCCESS, e.SUCCESS, errMsg, users)
+
 }
 
 // @Summary 获取单个用户信息
@@ -35,38 +44,103 @@ func ListUser(c *gin.Context) {
 // @accept json
 // @Produce  json
 // @param id path int true "ID"
-// @Success 200 {object} model.User
-// @Failure 500 {object} model.User
+// @Success 200 {object} model.Response
+// @Failure 500 {object} model.Response
 // @Router /get/{id} [get]
 func Get(c *gin.Context) {
+	var (
+		appG   = model.Gin{C: c}
+		errMsg string
+	)
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	user, err := model.User{}.GetUser(id)
 
-	c.JSON(200, gin.H{"data": user, "errMsg": err})
+	if err != nil {
+		errMsg = err.Error()
+		appG.Response(e.SUCCESS, e.ERROR, errMsg, user)
+		return
+	}
+	appG.Response(e.SUCCESS, e.SUCCESS, errMsg, user)
 }
 
-// @Summary 获取单个用户信息
-// @Description 根据Id获取所有用户信息
+type saveUserFrom struct {
+	Id       int    `json:"id"			`
+	UserName string `json:"userName"     valid:"Required"`
+	Birthday string `json:"birthday"     valid:"Required"`
+	Sex      bool   `json:"sex"          valid:"Required"`
+}
+
+// @Summary 修改用户信息
+// @Description 修改用户信息
 // @Tags 用户信息
 // @accept json
 // @Produce  json
 // @param request body model.User true "id代理 userName承兑人账户名 birthday承兑人姓名 sex电话号码"
-// @Success 200 {object} model.User
-// @Failure 500 {object} model.User
+// @Success 200 {object} model.Response
+// @Failure 500 {object} model.Response
 // @Router /update [post]
 func Update(c *gin.Context) {
-	data, _ := ioutil.ReadAll(c.Request.Body)
-	params := fmt.Sprintf("%v", string(data))
-	fmt.Println(params)
-	var getBody model.User
-	if err := json.Unmarshal(data, &getBody); err != nil {
-		fmt.Println(" transcode get, body Unmarshal error:%v", err)
+	var (
+		appG   = model.Gin{C: c}
+		form   saveUserFrom
+		errMsg string
+	)
+	httpCode, errCode := model.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, errMsg, nil)
 		return
 	}
-	fmt.Println("========================")
-	fmt.Println(getBody)
-	res, err := model.User{}.UpdateUser(getBody)
-	//fmt.Println(keyBytes)
-	c.JSON(200, gin.H{"data": res, "errMsg": err})
+
+	user := model.User{
+		Id:       form.Id,
+		UserName: form.UserName,
+		Sex:      form.Sex,
+		Birthday: form.Birthday,
+	}
+	res, err := model.User{}.SaveUser(user)
+
+	if err != nil {
+		errMsg = err.Error()
+		appG.Response(httpCode, errCode, errMsg, res)
+		return
+	}
+	appG.Response(httpCode, errCode, errMsg, res)
+}
+
+// @Summary 添加用户信息
+// @Description 添加所有用户信息
+// @Tags 用户信息
+// @accept json
+// @Produce  json
+// @param request body model.User true "id代理 userName承兑人账户名 birthday承兑人姓名 sex电话号码"
+// @Success 200 {object} model.Response
+// @Failure 500 {object} model.Response
+// @Router /add [post]
+func Add(c *gin.Context) {
+	var (
+		appG   = model.Gin{C: c}
+		form   saveUserFrom
+		errMsg string
+	)
+	httpCode, errCode := model.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, errMsg, nil)
+		return
+	}
+
+	user := model.User{
+		Id:       form.Id,
+		UserName: form.UserName,
+		Sex:      form.Sex,
+		Birthday: form.Birthday,
+	}
+	res, err := model.User{}.SaveUser(user)
+
+	if err != nil {
+		errMsg = err.Error()
+		appG.Response(httpCode, errCode, errMsg, res)
+		return
+	}
+	appG.Response(httpCode, errCode, errMsg, res)
 }

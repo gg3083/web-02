@@ -35,6 +35,46 @@
                 }
             }
         },
+        "/add": {
+            "post": {
+                "description": "添加所有用户信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户信息"
+                ],
+                "summary": "添加用户信息",
+                "parameters": [
+                    {
+                        "description": "id代理 userName承兑人账户名 birthday承兑人姓名 sex电话号码",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/get/{id}": {
             "get": {
                 "description": "根据Id获取所有用户信息",
@@ -61,13 +101,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.Response"
                         }
                     }
                 }
@@ -90,13 +130,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.Response"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.Response"
                         }
                     }
                 }
@@ -104,7 +144,7 @@
         },
         "/update": {
             "post": {
-                "description": "根据Id获取所有用户信息",
+                "description": "修改用户信息",
                 "consumes": [
                     "application/json"
                 ],
@@ -114,7 +154,7 @@
                 "tags": [
                     "用户信息"
                 ],
-                "summary": "获取单个用户信息",
+                "summary": "修改用户信息",
                 "parameters": [
                     {
                         "description": "id代理 userName承兑人账户名 birthday承兑人姓名 sex电话号码",
@@ -130,13 +170,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.Response"
                         }
                     }
                 }
@@ -144,6 +184,23 @@
         }
     },
     "definitions": {
+        "model.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "errMsg": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "model.User": {
             "type": "object",
             "properties": {

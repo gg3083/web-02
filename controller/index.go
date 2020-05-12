@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 // @Summary 接口概要说明
@@ -13,7 +14,11 @@ import (
 // @Failure 400 {object} model.User
 // @Router / [get]
 func Index(c *gin.Context) {
-	a := fmt.Sprint("main")
-	fmt.Println(a)
-	c.JSON(http.StatusOK, gin.H{"message": "main"})
+	formate := "2006-01-02 15:04:05"
+	now := time.Now()
+	fmt.Println(now)
+	local, _ := time.LoadLocation("Local") //输入参数"UTC"，等同于""
+
+	main := fmt.Sprintf("现在是 %s", now.In(local).Format(formate))
+	c.JSON(http.StatusOK, gin.H{"message": main})
 }

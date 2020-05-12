@@ -15,6 +15,7 @@ func InitRoute() *gin.Engine {
 	rotuer.GET("/list", ListUser)
 	rotuer.GET("/get/:id", Get)
 	rotuer.POST("/update", Update)
+	rotuer.POST("/add", Add)
 	rotuer.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return rotuer
 }
